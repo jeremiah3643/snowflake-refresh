@@ -4,7 +4,7 @@ sources:
   - name: cms
     database: DERM
     schema: RAW
-    description: Filtered CMS extracts loaded by load_raw.sql
+    description: Filtered CMS extracts from Scripts/Transform.py, loaded by Scripts/load_raw.sql
     tables:
       - name: medicare_prov_svc
         description: Medicare Physician & Other Practitioners by Provider and Service, 2024. Dermatology and Mohs, 9 states.

@@ -1,7 +1,8 @@
-﻿version: 2
+version: 2
 
 models:
   - name: dim_provider
+    description: One row per billing provider (NPI), with how their practice site was matched.
     columns:
       - name: npi
         data_tests: [unique, not_null]
@@ -12,11 +13,13 @@ models:
                 values: ['billing_zip_match', 'best_available_site', 'not_in_directory']
 
   - name: dim_practice
+    description: One row per practice (CMS group PAC ID), plus 'INDEPENDENT' and 'NOT_IN_DIRECTORY' buckets.
     columns:
       - name: practice_id
         data_tests: [unique, not_null]
 
   - name: dim_location
+    description: One row per practice site (CMS address ID, or billing ZIP when the provider is not in the directory), with state name and region.
     columns:
       - name: location_id
         data_tests: [unique, not_null]
@@ -24,9 +27,15 @@ models:
         data_tests: [not_null]
 
   - name: dim_service
+    description: One row per procedure code (HCPCS), with its service line (rule-based for Mohs codes, Cortex AI_CLASSIFY for the rest).
     columns:
       - name: hcpcs_code
         data_tests: [unique, not_null]
+      - name: service_line_source
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['rule', 'ai']
 
   - name: fct_services
     description: One row per provider, procedure and place of service. Dollar totals = CMS average x services.

@@ -1,5 +1,5 @@
 -- One row per clinician, enrollment, group and address. Not deduplicated:
--- choosing a clinician's practice site happens in Session 3.
+-- choosing each clinician's practice site happens in int_provider_site.
 with source as (
     select * from {{ source('cms', 'dac_clinicians') }}
 ),
