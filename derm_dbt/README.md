@@ -1,15 +1,28 @@
-Welcome to your new dbt project!
+# derm_dbt
 
-### Using the starter project
+dbt project that turns the raw CMS extracts in `DERM.RAW` into a tested star schema in `DERM.MARTS`.
+See the [project README](../README.md) for the full pipeline and design notes.
 
-Try running the following commands:
-- dbt run
-- dbt test
+## Layers
 
+| Layer | Schema | Materialized | Models |
+|---|---|---|---|
+| Sources | `RAW` | tables (loaded by `Scripts/load_raw.sql`) | `medicare_prov_svc`, `dac_clinicians` |
+| Staging | `STAGING` | views | `stg_cms__medicare_services`, `stg_cms__dac_clinicians` |
+| Intermediate | `STAGING` | views / incremental | `int_provider_site`, `int_service_line_ai` |
+| Marts | `MARTS` | tables | `fct_services`, `dim_provider`, `dim_practice`, `dim_location`, `dim_service` |
 
-### Resources:
-- Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
-- Check out [Discourse](https://discourse.getdbt.com/) for commonly asked questions and answers
-- Join the [chat](https://community.getdbt.com/) on Slack for live discussions and support
-- Find [dbt events](https://events.getdbt.com) near you
-- Check out [the blog](https://blog.getdbt.com/) for the latest news on dbt's development and best practices
+Seed: `state_regions` maps each state to a region.
+
+`macros/generate_schema_name.sql` overrides dbt's default so models land in `STAGING` and `MARTS`
+exactly, not `<target_schema>_STAGING`.
+
+## Running
+
+From this folder, with a `derm_dbt` profile in `~/.dbt/profiles.yml`:
+
+```bash
+dbt debug       # check the connection
+dbt build       # seed, run and test everything in dependency order
+dbt docs generate && dbt docs serve   # browse lineage and column docs
+```
