@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: cms
+    database: DERM
+    schema: RAW
+    description: Filtered CMS extracts loaded by load_raw.sql
+    tables:
+      - name: medicare_prov_svc
+        description: Medicare Physician & Other Practitioners by Provider and Service, 2024. Dermatology and Mohs, 9 states.
+      - name: dac_clinicians
+        description: Doctors and Clinicians National Downloadable File. Dermatology and Mohs, 9 states. One row per clinician, group and address.

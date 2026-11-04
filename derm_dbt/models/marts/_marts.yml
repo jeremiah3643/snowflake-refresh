@@ -1,0 +1,58 @@
+﻿version: 2
+
+models:
+  - name: dim_provider
+    columns:
+      - name: npi
+        data_tests: [unique, not_null]
+      - name: site_match_method
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['billing_zip_match', 'best_available_site', 'not_in_directory']
+
+  - name: dim_practice
+    columns:
+      - name: practice_id
+        data_tests: [unique, not_null]
+
+  - name: dim_location
+    columns:
+      - name: location_id
+        data_tests: [unique, not_null]
+      - name: region
+        data_tests: [not_null]
+
+  - name: dim_service
+    columns:
+      - name: hcpcs_code
+        data_tests: [unique, not_null]
+
+  - name: fct_services
+    description: One row per provider, procedure and place of service. Dollar totals = CMS average x services.
+    columns:
+      - name: npi
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_provider')
+                field: npi
+      - name: practice_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_practice')
+                field: practice_id
+      - name: location_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_location')
+                field: location_id
+      - name: hcpcs_code
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_service')
+                field: hcpcs_code

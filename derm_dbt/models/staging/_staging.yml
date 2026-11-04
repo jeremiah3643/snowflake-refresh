@@ -1,0 +1,44 @@
+﻿version: 2
+
+models:
+  - name: stg_cms__medicare_services
+    description: One row per provider, procedure code and place of service.
+    data_tests:
+      - unique:
+          arguments:
+            column_name: "npi || '|' || hcpcs_code || '|' || place_of_service"
+    columns:
+      - name: npi
+        data_tests: [not_null]
+      - name: hcpcs_code
+        data_tests: [not_null]
+      - name: place_of_service
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['F', 'O']
+      - name: entity_type
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['I', 'O']
+      - name: billing_state
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['TN', 'KY', 'VA', 'NC', 'GA', 'AL', 'MS', 'AR', 'MO']
+      - name: beneficiaries
+        data_tests: [not_null]
+
+  - name: stg_cms__dac_clinicians
+    description: One row per clinician, enrollment, group and address. Not deduplicated.
+    columns:
+      - name: npi
+        data_tests: [not_null]
+      - name: address_id
+        data_tests: [not_null]
+      - name: practice_state
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['TN', 'KY', 'VA', 'NC', 'GA', 'AL', 'MS', 'AR', 'MO']
